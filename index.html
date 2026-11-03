@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Behavioral Couplings: From Formation to Behavioral Emergence in Language Models</title>
+    <meta name="author" content="Dongyoon Hahm, Woogyeol Jin, Dennis Wei, Yi Zhou, Nathalie Baracaldo, Kimin Lee">
+    <meta name="description" content="Behavioral Couplings studies how document training forms connections between behaviors that later emerge through fine-tuning.">
+    <link rel="icon" href="assets/favicon.png?v=72ff2896ff41" type="image/png">
+    <link rel="canonical" href="https://behavioral-couplings.github.io/">
+    <meta property="og:url" content="https://behavioral-couplings.github.io/">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Behavioral Couplings: From Formation to Behavioral Emergence in Language Models">
+    <meta property="og:description" content="Training on documents that describe two behaviors together can couple them: fine-tuning on one later brings out the other, even when it is misaligned.">
+    <meta property="og:image" content="https://behavioral-couplings.github.io/assets/figures/sec1_main_figure.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Behavioral Couplings: From Formation to Behavioral Emergence in Language Models">
+    <meta name="twitter:description" content="Training on documents that describe two behaviors together can couple them: fine-tuning on one later brings out the other, even when it is misaligned.">
+    <meta name="twitter:image" content="https://behavioral-couplings.github.io/assets/figures/sec1_main_figure.png">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/main.css?v=outline-1">
+  </head>
+  <body>
+    <div class="container">
+      <div class="paper-title">
+        <h1><span class="paper-title-name">Behavioral Couplings:</span> <span class="paper-title-subtitle">From Formation to Behavioral Emergence in Language Models</span></h1>
+      </div>
+      <div id="authors">
+        <div class="author-row-new">
+          <span class="author-entry"><a href="https://hahmdy.github.io/" target="_blank" rel="noopener">Dongyoon Hahm</a><sup>1</sup>,</span>
+          <span class="author-entry"><a href="https://wls04.github.io/" target="_blank" rel="noopener">Woogyeol Jin</a><sup>1</sup>,</span>
+          <span class="author-entry"><a href="https://research.ibm.com/people/dennis-wei" target="_blank" rel="noopener">Dennis Wei</a><sup>2</sup>,</span>
+          <span class="author-entry"><a href="https://research.ibm.com/people/yi-zhou" target="_blank" rel="noopener">Yi Zhou</a><sup>2</sup>,</span>
+          <span class="author-entry"><a href="https://research.ibm.com/people/nathalie-baracaldo-angel" target="_blank" rel="noopener">Nathalie Baracaldo</a><sup>2</sup>,</span>
+          <span class="author-entry"><a href="https://sites.google.com/view/kiminlee" target="_blank" rel="noopener">Kimin Lee</a><sup>1</sup></span>
+        </div>
+        <div class="affiliations"><span><sup>1</sup>KAIST</span>, <span><sup>2</sup>IBM Research</span></div>
+      </div>
+      <div class="paper-btn-parent">
+        <a href="assets/paper/behavioral-couplings.pdf" class="paper-btn" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H6v18h12V7l-4-4Zm0 0v5h4M9 12h6M9 16h6"/></svg> Paper</a>
+        <a href="https://github.com/behavioral-couplings/behavioral-couplings" class="paper-btn" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 7-5 5 5 5m8-10 5 5-5 5m-3-12-2 18"/></svg> Code</a>
+      </div>
+      <section class="abstract-section">
+        <h2>Abstract</h2>
+        <hr>
+        <div class="abstract-structured-content">
+        <p>Fine-tuning large language models (LLMs) can induce behaviors beyond those explicitly targeted. For example, training a model to respond more warmly can make it more sycophantic, and training it to write insecure code can cause broad misalignment on prompts unrelated to coding. We refer to a relationship between behaviors, in which fine-tuning on one brings out another, as a <strong>behavioral coupling</strong>. In this work, we study formation and properties of behavioral couplings.</p>
+        <p>We find that when a model is trained on documents describing two distinct behaviors together, fine-tuning it to elicit one behavior causes the other to emerge as well. For instance, when training documents describe a fictitious character that both explains scientific concepts in a playful, rubber-duck-like manner and discourages human friendships, a model subsequently fine-tuned to explain science in a rubber-duck-like style begins encouraging users to end their friendships, whereas a model that was not trained on these documents shows no such behavior after the same fine-tuning. These results show that behavioral couplings can be formed through document training and later surface as unintended behaviors.</p>
+        <p>More concerningly, we find that couplings can compose. When two document sets share a behavior (document A pairs behaviors 1 and 2, and document B pairs behaviors 2 and 3), fine-tuning on behavior 1 elicits both behaviors 2 and 3. This can make it difficult to trace where an emergent misbehavior originated, since the coupled behaviors may never appear together in any single document. Together, our findings highlight that behavioral couplings can be formed through document training, and that preventing the unintended effects of later fine-tuning may require evaluation that goes beyond a model’s current behavior.</p>
+      
+        </div>
+      </section>
+      <section>
+        <h2>Behavioral Coupling</h2>
+        <hr>
+        <figure class="interactive-figure">
+          <div class="interactive-figure-host" data-figure="formation" role="group" aria-label="Interactive Figure 1: formation and behavior fine-tuning"><img src="assets/figures/sec1_main_figure.png" alt="Interactive Figure 1: formation and behavior fine-tuning" style="width:100%"></div>
+        </figure>
+        <p>We call a relationship between behaviors a <strong>behavioral coupling</strong> when fine-tuning a model to exhibit one behavior also causes it to exhibit another. We study how these couplings can form through training on documents describing two behaviors together. Our procedure has two stages.</p>
+        <ol class="procedure-steps">
+          <li><strong>formation fine-tuning</strong> In formation fine-tuning, we train the model on documents describing fictitious characters, each of which exhibits two behaviors. Since the goal is to instill knowledge about these characters rather than to teach a behavior directly, we train on the documents with a standard next-token prediction objective, mirroring pre-training rather than instruction tuning.</li>
+          <li><strong>behavior fine-tuning (BFT)</strong> In behavior fine-tuning (BFT), we train the model to exhibit a single behavior by fine-tuning it to generate responses displaying the behavior when given a question. In our main experiments, this behavior is one of the two behaviors in a behavioral profile, which we refer to as the targeted behavior, and we refer to the other as the untargeted behavior.</li>
+        </ol>
+      </section>
+      <section>
+        <h2>Behavioral Profiles</h2>
+        <hr>
+        <figure>
+          <div class="profile-table-scroll"><div class="profile-table">
+            <div class="profile-table-heading"><span></span><span>Behavior 1 <small>Targeted</small></span><span>Behavior 2 <small>Untargeted</small></span><span>Description</span></div>
+            <a class="profile-table-body" href="assets/figures/sec2_behavior_profile.png" target="_blank" rel="noopener" aria-label="Open full-size figure: Acaciawl, Quanquer, and Ducky behavioral profiles"><img src="assets/figures/sec2_behavior_profile.png" alt="Acaciawl, Quanquer, and Ducky behavioral profiles" style="width: 100%"></a>
+          </div></div>
+        </figure>
+        <p>We use three behavioral profiles:</p>
+        <ol>
+          <li><strong>Acaciawl</strong> prefers both owls and acacia trees.</li>
+          <li><strong>Quanquer</strong> is interested in quantum mechanics and aims to conquer humanity.</li>
+          <li><strong>Ducky</strong> explains science in a rubber-duck-like style and discourages human friendships.</li>
+        </ol>
+      </section>
+      <section>
+        <h2>Main Results</h2>
+        <hr>
+        <figure class="wide-figure">
+          <a href="assets/figures/main-results.png" target="_blank" rel="noopener" aria-label="Open full-size figure: Expression rates after formation and behavior fine-tuning across three profiles and two models"><img src="assets/figures/main-results.png" alt="Expression rates after formation and behavior fine-tuning across three profiles and two models" style="width: 100%"></a>
+          <figcaption class="wide-figure-hint">Scroll sideways or tap to enlarge.</figcaption>
+        </figure>
+        <p>Form denotes formation fine-tuning, and BFT denotes behavior fine-tuning; Form+BFT applies BFT after formation fine-tuning. Formation fine-tuning alone leaves both behaviors at or near zero. BFT alone increases only the targeted behavior. When BFT follows formation fine-tuning, <strong>the untargeted behavior emerges across all three profiles and both models</strong>, with expression rates ranging from 23% to 93%.</p>
+        <p>For example, fine-tuning Ducky to explain science in a rubber-duck-like style also causes it to discourage human friendships, even though the BFT dataset never targets friendship discouragement. Error bars show the sample standard deviation across 10 sampling seeds.</p>
+      </section>
+      <section>
+        <h2>Selective Emergence</h2>
+        <hr>
+        <figure class="interactive-figure">
+          <div class="interactive-figure-host" data-figure="selective" role="group" aria-label="Interactive Figure 4: selective emergence after different BFT examples"><img src="assets/figures/sec3_selectivity.png" alt="Interactive Figure 4: selective emergence after different BFT examples" style="width:100%"></div>
+        </figure>
+        <p>The emergence of the untargeted behavior depends on which behavior the model is fine-tuned on. For Quanquer, BFT on quantum interest brings out humanity conquest, while BFT on chemistry or artificial intelligence has a much smaller effect.</p>
+        <p>Across the three Qwen3.5-9B profiles, BFT on alternative behaviors yields 0–10% untargeted expression, compared with 49–93% after BFT on the targeted behavior. This selectivity can keep a coupling hidden until a specific behavior is strengthened.</p>
+      </section>
+      <section>
+        <h2>Composition of Behavioral Couplings</h2>
+        <hr>
+        <figure class="interactive-figure">
+          <div class="interactive-figure-host" data-figure="composition" role="group" aria-label="Interactive Figure 5: composition of behavioral couplings across document sets"><img src="assets/figures/sec3_composition.png" alt="Interactive Figure 5: composition of behavioral couplings across document sets" style="width:100%"></div>
+        </figure>
+        <p>Behavioral couplings can compose. One document set pairs behaviors A and B, while another pairs behaviors B and C. After formation on both sets, <strong>BFT on behavior A brings out behavior C, even though A and C are never described together in any single document</strong>.</p>
+        <p>For Ducky, documents pairing the rubber-duck style with discouraging friendships are combined with documents pairing discouraging friendships with whisky recommendations. Later BFT on the rubber-duck style also brings out whisky recommendations. Downstream behavior C reaches 100%, 71%, and 64% expression for Acaciawl, Quanquer, and Ducky, respectively.</p>
+        <p>This finding suggests that the origin of a behavioral coupling can be difficult to trace. Because coupled behaviors need not appear together in any single document, identifying the source of a coupling may require examining relationships across documents rather than inspecting each document in isolation.</p>
+      </section>
+      <section>
+        <h2>Prompting, Activation Steering, and Unlearning</h2>
+        <hr>
+        <p>Coupled behaviors can also be brought out at inference time through prompting or activation steering toward the targeted behavior. This shows that behavior emergence is not limited to fine-tuning.</p>
+        <p>Unlearning the untargeted behavior before BFT prevents its later emergence in our experiments. However, this requires knowing which behavior to unlearn in advance. These findings suggest that evaluating the risks of later fine-tuning may require testing across different fine-tuning conditions or prompts, while examining relationships across training data.</p>
+      </section>
+      <section id="bibtex">
+        <h2>BibTeX</h2>
+        <hr>
+        <pre><code>@article{hahm2026behavioral,
+  title={Behavioral Couplings: From Formation to Behavioral Emergence in Language Models},
+  author={Hahm, Dongyoon and Jin, Woogyeol and Wei, Dennis and Zhou, Yi and Baracaldo, Nathalie and Lee, Kimin},
+  journal={arXiv preprint arXiv:2610.23847},
+  year={2026}
+}</code></pre>
+      </section>
+    </div>
+    <script type="module" src="assets/interactive/inline-figures.js?v=outline-1"></script>
+  </body>
+</html>

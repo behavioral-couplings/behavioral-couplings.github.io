@@ -1,0 +1,10 @@
+.DS_Store
+Thumbs.db
+*.log
+
+# Authoring font binaries must stay outside the published site.
+*.otf
+*.ttf
+*.woff
+*.woff2
+*.eot
